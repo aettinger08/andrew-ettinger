@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f5f1" />
+  <title>Study Library — Genesis 1</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn" id="libraryBtn" aria-label="Library">☰</button>
+    <div class="brand">Study Library</div>
+    <div class="top-actions">
+      <button class="icon-btn" id="searchBtn" aria-label="Search">⌕</button>
+      <button class="icon-btn" id="themeBtn" aria-label="Theme">◐</button>
+      <button class="avatar" id="accountBtn" title="Account & sync">↻</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="side-section-title">Library</div>
+      <nav>
+        <button class="nav-row active">▣ <span>Scriptures</span></button>
+        <button class="nav-row">⌁ <span>General Conference</span></button>
+        <button class="nav-row">✦ <span>Church History</span></button>
+        <button class="nav-row">◫ <span>Manuals</span></button>
+        <button class="nav-row">▤ <span>My Library</span></button>
+      </nav>
+      <div class="side-section-title space">Sources</div>
+      <div class="source-pill official">Official LDS</div>
+      <div class="source-pill">Bible Translations</div>
+      <div class="source-pill">Hebrew & Greek</div>
+      <div class="source-pill">Dictionaries</div>
+      <div class="source-pill">Jewish Calendar</div>
+    </aside>
+
+    <section class="reader-column">
+      <div class="breadcrumb">Old Testament <span>›</span> Genesis</div>
+      <div class="reader-toolbar">
+        <div>
+          <h1>Genesis 1</h1>
+          <div class="subhead">The First Book of Moses Called Genesis</div>
+        </div>
+        <div class="reader-actions">
+          <button class="soft-btn" id="compareBtn">⇄ Compare</button>
+          <button class="soft-btn" id="studySetBtn">＋ Study Set</button>
+        </div>
+      </div>
+      <p class="chapter-summary">God creates this earth and its heaven and all forms of life in six days—The creative acts of each day are described—God creates man, both male and female, in His own image—Man is given dominion over all things and is commanded to multiply and fill the earth.</p>
+      <div class="integrity-banner">✓ Official LDS layer · read-only canonical source</div>
+      <article class="scripture" id="scripture"></article>
+    </section>
+
+    <aside class="study-panel" id="studyPanel">
+      <div class="panel-header">
+        <div>
+          <div class="eyebrow" id="panelEyebrow">STUDY</div>
+          <h2 id="panelTitle">Select a verse or word</h2>
+        </div>
+        <button class="icon-btn" id="closePanel">×</button>
+      </div>
+      <div class="panel-tabs">
+        <button class="tab active" data-tab="study">Study</button>
+        <button class="tab" data-tab="notes">My Notes</button>
+        <button class="tab" data-tab="links">Links</button>
+      </div>
+      <div id="panelContent" class="panel-content">
+        <div class="empty-state">Tap a <strong>verse number</strong> for verse tools, or tap <strong>any word</strong> for word study.</div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="modal-backdrop hidden" id="compareModal">
+    <div class="modal compare-modal">
+      <div class="modal-header"><h2>Compare translations</h2><button class="icon-btn" data-close-modal>×</button></div>
+      <p>KJV is the default reading text. Choose only the translations you want beside it.</p>
+      <label class="check-row"><input type="checkbox" checked disabled> KJV <span class="badge">Default</span></label>
+      <label class="check-row"><input type="checkbox" value="ESV"> ESV</label>
+      <label class="check-row"><input type="checkbox" value="NRSV"> NRSV</label>
+      <label class="check-row"><input type="checkbox" value="NIV"> NIV</label>
+      <label class="check-row"><input type="checkbox" value="NLT"> NLT</label>
+      <label class="check-row"><input type="checkbox" value="NKJV"> NKJV</label>
+      <label class="check-row"><input type="checkbox" value="NIrV"> NIrV</label>
+      <p class="fineprint">These modern translations are intentionally listed but not bundled into the prototype until their licensed delivery path is connected.</p>
+      <button class="primary-btn" id="openCompare">Open comparison</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="accountModal">
+    <div class="modal">
+      <div class="modal-header"><h2>Study Library Sync</h2><button class="icon-btn" id="closeAccount">×</button></div>
+      <div id="authStatus" class="sync-status">Not signed in</div>
+      <label class="field-label">Email</label>
+      <input class="text-input" id="authEmail" type="email" autocomplete="email" placeholder="you@example.com">
+      <label class="field-label">Password</label>
+      <input class="text-input" id="authPassword" type="password" autocomplete="current-password" placeholder="Password">
+      <div class="auth-actions">
+        <button class="primary-btn" id="signInBtn">Sign in & sync</button>
+        <button class="soft-btn full" id="signUpBtn">Create my account</button>
+        <button class="text-btn hidden" id="signOutBtn">Sign out</button>
+      </div>
+      <p class="fineprint">Your personal highlights, notes, tags, links, bookmarks and study sets are private to your authenticated account. The official LDS source layer remains read-only.</p>
+    </div>
+  </div>
+
+  <div class="compare-drawer hidden" id="compareDrawer">
+    <div class="drawer-head"><strong id="compareTitle">Genesis 1:1</strong><button class="icon-btn" id="closeCompare">×</button></div>
+    <div class="compare-grid">
+      <section><div class="source-label official">LDS KJV</div><p id="ldsCompareText"></p></section>
+      <section><div class="source-label">Selected translations</div><div id="otherCompareText" class="translation-placeholders"></div></section>
+    </div>
+  </div>
+
+  <div class="selection-toolbar hidden" id="selectionToolbar">
+    <button data-action="highlight">Highlight</button>
+    <button data-action="note">Note</button>
+    <button data-action="tag">Tag</button>
+    <button data-action="link">Link</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
