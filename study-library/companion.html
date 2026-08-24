@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f4ef">
+<title>Study Companion</title>
+<style>
+:root{--bg:#f6f4ef;--paper:#fff;--ink:#282824;--muted:#7b7971;--line:#dedbd3;--accent:#597b73;--accent-soft:#e8efec;--blue:#4b6684;--gold:#8f7236;--shadow:0 14px 40px rgba(30,30,25,.10)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.top{height:58px;display:flex;align-items:center;border-bottom:1px solid var(--line);padding:0 18px;background:rgba(246,244,239,.96);position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}.brand{font-family:Georgia,serif;font-weight:700;font-size:20px}.top small{color:var(--muted);margin-left:10px}.top .right{margin-left:auto;display:flex;gap:8px}.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 12px;font-weight:650;color:var(--ink);cursor:pointer}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}.context{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.025)}.eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}.selected{font-family:Georgia,serif;font-size:34px;line-height:1.15;margin:6px 0 8px}.reference{font-family:Georgia,serif;font-size:18px;color:#5d5a53}.source-url{font-size:11px;color:var(--muted);word-break:break-all;margin-top:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.section-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}.section-card h2{font-family:Georgia,serif;margin:3px 0 10px;font-size:21px}.section-card p{font-size:14px;line-height:1.55;color:#504d47;margin:7px 0}.section-card.official{border-left:4px solid var(--accent)}.section-card.language{border-left:4px solid var(--blue)}.section-card.dictionary{border-left:4px solid var(--gold)}.source-tag{display:inline-block;padding:4px 7px;border-radius:999px;background:var(--accent-soft);color:#356157;font-size:10px;font-weight:800;letter-spacing:.08em}.resource-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid #eee;font-size:13px}.resource-row:first-of-type{border-top:0}.muted{color:var(--muted)}.empty{border:1px dashed var(--line);border-radius:12px;padding:18px;color:var(--muted);font-size:14px;line-height:1.5}.parsebox{margin-top:16px}.parsebox input,.parsebox textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:11px;font:inherit}.parsebox textarea{min-height:88px;resize:vertical}.stack{display:grid;gap:8px}.footnote{font-family:Georgia,serif;line-height:1.6}.hebrew{font-size:28px;direction:rtl;text-align:left;font-family:"Times New Roman",serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#f2f0eb;padding:8px;border-radius:8px}.footer-note{font-size:11px;color:var(--muted);margin-top:20px;line-height:1.5}@media(max-width:760px){.context,.grid{grid-template-columns:1fr}.wrap{padding:18px 14px 60px}.selected{font-size:30px}.top small{display:none}.top{padding:0 12px}.btn{padding:8px 10px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Study Companion</div><small>for Gospel Library</small><div class="right"><button class="btn" id="copyLink">Copy Link</button><button class="btn primary" id="returnBtn">Return to Gospel Library</button></div></header>
+<main class="wrap">
+<section class="context">
+  <div class="card">
+    <div class="eyebrow">Shared selection</div>
+    <div class="selected" id="selectedText">No shared text yet</div>
+    <div class="reference" id="referenceText">Share a word or verse from Gospel Library</div>
+    <div class="actions"><button class="btn" id="editBtn">Edit context</button><button class="btn" id="saveBtn">Save to My Study</button></div>
+    <div class="source-url" id="sourceUrl"></div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">Detected context</div>
+    <div class="stack" style="margin-top:10px"><div><strong>Book</strong><div class="muted" id="bookVal">—</div></div><div><strong>Chapter</strong><div class="muted" id="chapterVal">—</div></div><div><strong>Verse</strong><div class="muted" id="verseVal">—</div></div><div><strong>Selected word/phrase</strong><div class="muted" id="phraseVal">—</div></div></div>
+  </div>
+</section>
+
+<section class="parsebox card" id="editBox" style="display:none">
+  <div class="eyebrow">Manual context</div>
+  <div class="stack" style="margin-top:10px"><input id="refInput" placeholder="Genesis 1:1"><textarea id="textInput" placeholder="Shared word, phrase, or verse text"></textarea><button class="btn primary" id="applyEdit">Apply</button></div>
+</section>
+
+<section class="grid">
+  <article class="section-card official"><span class="source-tag">OFFICIAL LDS</span><h2>LDS Footnotes & Cross-References</h2><div id="ldsArea" class="empty">Once the shared selection is recognized, the exact official LDS footnote(s) tied to that word or verse will appear here. This layer remains separate and read-only.</div></article>
+  <article class="section-card language"><span class="source-tag" style="background:#e8edf4;color:#425e7b">ORIGINAL LANGUAGE</span><h2>Hebrew / Greek</h2><div id="languageArea" class="empty">Lemma, transliteration, morphology, Strong’s number, lexical definitions, and occurrence links will appear here.</div></article>
+  <article class="section-card dictionary"><span class="source-tag" style="background:#f4eee0;color:#765d28">DICTIONARIES</span><h2>Word Definitions</h2><div id="dictionaryArea"><div class="resource-row"><span>Webster 1828</span><span class="muted">connector ready</span></div><div class="resource-row"><span>Oxford</span><span class="muted">lookup path pending</span></div><div class="resource-row"><span>Bible dictionaries</span><span class="muted">planned</span></div></div></article>
+  <article class="section-card"><span class="source-tag" style="background:#efefef;color:#555">COMPARISON</span><h2>Bible Translations</h2><p>KJV is the default. Your preferred comparison set is:</p><div class="resource-row"><span>KJV</span><strong>Default</strong></div><div class="resource-row"><span>ESV · NRSV · NIV</span><span class="muted">planned</span></div><div class="resource-row"><span>NLT · NKJV · NIrV</span><span class="muted">planned</span></div></article>
+  <article class="section-card"><span class="source-tag" style="background:#ece8f1;color:#634d77">OTHER SOURCES</span><h2>BLB-style Research</h2><div class="resource-row"><span>Strong’s / concordance</span><span class="muted">planned</span></div><div class="resource-row"><span>Published footnotes</span><span class="muted">planned</span></div><div class="resource-row"><span>Commentaries</span><span class="muted">planned</span></div><div class="resource-row"><span>Cross references</span><span class="muted">planned</span></div></article>
+  <article class="section-card"><span class="source-tag" style="background:#e8f0ea;color:#45634e">MY STUDY</span><h2>Notes, Tags & Links</h2><div id="myStudyArea" class="empty">Anything you save from the companion will sync with your private Study Library account once sign-in is connected to this page.</div></article>
+</section>
+<p class="footer-note">Prototype behavior: this page accepts <span class="mono">?text=</span>, <span class="mono">?url=</span>, <span class="mono">?title=</span>, and <span class="mono">?ref=</span> query parameters. That is what the Apple Shortcut and desktop launcher will send.</p>
+</main>
+<script>
+const q=new URLSearchParams(location.search);
+const rawText=(q.get('text')||q.get('input')||'').trim();
+const rawUrl=(q.get('url')||'').trim();
+const rawTitle=(q.get('title')||'').trim();
+const explicitRef=(q.get('ref')||'').trim();
+const sampleFootnotes={
+ 'Genesis 1:1|beginning':'TG Time.',
+ 'Genesis 1:1|God':'Mosiah 4:2; Mormon 9:11; Doctrine and Covenants 14:9; 76:24; Moses 2:1; Abraham 4:1.',
+ 'Genesis 1:1|created':'HEB shaped, fashioned, created; always divine activity; see Abraham 4:1, organized, formed. TG Creation; God, Creator.',
+ 'Genesis 1:1|heaven':'Doctrine and Covenants 121:4; Moses 1:37; 2:1; Abraham 4:1. TG Astronomy; Heaven.',
+ 'Genesis 1:1|earth':'TG Nature, Earth.'
+};
+const hebrewDemo={
+ 'beginning':{he:'בְּרֵאשִׁית',tr:'berēʾšît',strong:'H7225',meaning:'beginning, first, chief, first part'},
+ 'created':{he:'בָּרָא',tr:'bārāʾ',strong:'H1254',meaning:'to create, shape, form; used in the Hebrew Bible for divine creative activity in key contexts'},
+ 'God':{he:'אֱלֹהִים',tr:'ʾĕlōhîm',strong:'H430',meaning:'God, gods, divine beings; context determines sense'}
+};
+function detectRef(text,url,title){
+ const joined=[explicitRef,title,text,url].filter(Boolean).join(' ');
+ let m=joined.match(/\b(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|Samuel|Kings|Chronicles|Ezra|Nehemiah|Esther|Job|Psalms?|Proverbs|Ecclesiastes|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|Corinthians|Galatians|Ephesians|Philippians|Colossians|Thessalonians|Timothy|Titus|Philemon|Hebrews|James|Peter|Jude|Revelation)\s+(\d+):(\d+)/i);
+ if(m)return {book:m[1],chapter:m[2],verse:m[3],ref:`${m[1]} ${m[2]}:${m[3]}`};
+ let u=url.match(/\/scriptures\/(?:ot|nt)\/([^/]+)\/(\d+).*?(?:id=p(\d+)|#p(\d+))?/i);
+ if(u){const map={gen:'Genesis',ex:'Exodus',lev:'Leviticus',num:'Numbers',deut:'Deuteronomy',matt:'Matthew',mark:'Mark',luke:'Luke',john:'John'};return {book:map[u[1]]||u[1],chapter:u[2],verse:u[3]||u[4]||'',ref:`${map[u[1]]||u[1]} ${u[2]}${(u[3]||u[4])?':'+(u[3]||u[4]):''}`}}
+ return {book:'',chapter:'',verse:'',ref:explicitRef||''};
+}
+function cleanSelection(t){return t.replace(/^\s+|\s+$/g,'').replace(/^“|”$/g,'')}
+let state={text:cleanSelection(rawText),url:rawUrl,title:rawTitle,...detectRef(rawText,rawUrl,rawTitle)};
+function phraseGuess(){if(!state.text)return'';const words=state.text.replace(/[“”"'.,;:!?()]/g,'').split(/\s+/);return words.length<=5?words.join(' '):''}
+function render(){
+ const phrase=phraseGuess();
+ selectedText.textContent=state.text||'No shared text yet';
+ referenceText.textContent=state.ref||'Reference not detected yet';
+ sourceUrl.textContent=state.url?`Source: ${state.url}`:'';
+ bookVal.textContent=state.book||'Not detected';chapterVal.textContent=state.chapter||'Not detected';verseVal.textContent=state.verse||'Not detected';phraseVal.textContent=phrase||'Shared passage';
+ const lookupWord=phrase.split(/\s+/)[0]||'';
+ const key=state.ref&&lookupWord?`${state.ref}|${lookupWord}`:'';
+ const fn=sampleFootnotes[key];
+ ldsArea.className=fn?'footnote':'empty';
+ ldsArea.innerHTML=fn?`<div class="source-tag">Official LDS</div><p><strong>${lookupWord}</strong></p><p>${fn}</p>`:'The exact official LDS footnote for this selection is not loaded in this prototype yet. The production version will retrieve/verify it from the canonical LDS source.';
+ const lang=hebrewDemo[lookupWord];
+ languageArea.className=lang?'':'empty';
+ languageArea.innerHTML=lang?`<div class="hebrew">${lang.he}</div><p><strong>${lang.tr}</strong> · ${lang.strong}</p><p>${lang.meaning}</p>`:'Original-language data is not loaded for this selection yet.';
+}
+editBtn.onclick=()=>{editBox.style.display=editBox.style.display==='none'?'block':'none';refInput.value=state.ref||'';textInput.value=state.text||''};
+applyEdit.onclick=()=>{const m=detectRef(textInput.value,'',refInput.value);state={...state,text:textInput.value.trim(),...m,ref:refInput.value.trim()||m.ref};editBox.style.display='none';render()};
+copyLink.onclick=async()=>{await navigator.clipboard.writeText(location.href);copyLink.textContent='Copied';setTimeout(()=>copyLink.textContent='Copy Link',1200)};
+saveBtn.onclick=()=>alert('Save/sync wiring is next. The receiver and context parser are working first.');
+returnBtn.onclick=()=>{if(state.url&&/churchofjesuschrist\.org/.test(state.url)){location.href=state.url;return}if(state.ref){const search='https://www.churchofjesuschrist.org/search?lang=eng&query='+encodeURIComponent(state.ref);location.href=search;return}history.back()};
+render();
+</script>
+</body>
+</html>
