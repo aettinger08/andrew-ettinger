@@ -1,3 +1,4 @@
+import './companion-menu.js';
 // Study Companion LDS Standard Works reference parser
 // Supports Bible, Book of Mormon, Doctrine and Covenants, and Pearl of Great Price.
 const LDS_BOOKS = [
@@ -7,7 +8,7 @@ const LDS_BOOKS = [
 ];
 const BIBLE_BOOKS = new Set(LDS_BOOKS.slice(0,67).map(x=>x.toLowerCase()));
 const escRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-const html=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const html=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 export const LDS_REF_RE=new RegExp('\\b('+LDS_BOOKS.sort((a,b)=>b.length-a.length).map(escRe).join('|')+')\\s+(\\d+):(\\d+)','i');
 const SLUGS={
 '1-ne':['1 Nephi','bofm'],'2-ne':['2 Nephi','bofm'],jacob:['Jacob','bofm'],enos:['Enos','bofm'],jarom:['Jarom','bofm'],omni:['Omni','bofm'],'w-of-m':['Words of Mormon','bofm'],mosiah:['Mosiah','bofm'],alma:['Alma','bofm'],hel:['Helaman','bofm'],'3-ne':['3 Nephi','bofm'],'4-ne':['4 Nephi','bofm'],morm:['Mormon','bofm'],ether:['Ether','bofm'],moro:['Moroni','bofm'],dc:['Doctrine and Covenants','dc-testament'],moses:['Moses','pgp'],abr:['Abraham','pgp'],'js-m':['Joseph Smith—Matthew','pgp'],'js-h':['Joseph Smith—History','pgp'],'a-of-f':['Articles of Faith','pgp'],
