@@ -7,6 +7,7 @@ const LDS_BOOKS = [
 ];
 const BIBLE_BOOKS = new Set(LDS_BOOKS.slice(0,67).map(x=>x.toLowerCase()));
 const escRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const html=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const LDS_REF_RE=new RegExp('\\b('+LDS_BOOKS.sort((a,b)=>b.length-a.length).map(escRe).join('|')+')\\s+(\\d+):(\\d+)','i');
 const SLUGS={
 '1-ne':['1 Nephi','bofm'],'2-ne':['2 Nephi','bofm'],jacob:['Jacob','bofm'],enos:['Enos','bofm'],jarom:['Jarom','bofm'],omni:['Omni','bofm'],'w-of-m':['Words of Mormon','bofm'],mosiah:['Mosiah','bofm'],alma:['Alma','bofm'],hel:['Helaman','bofm'],'3-ne':['3 Nephi','bofm'],'4-ne':['4 Nephi','bofm'],morm:['Mormon','bofm'],ether:['Ether','bofm'],moro:['Moroni','bofm'],dc:['Doctrine and Covenants','dc-testament'],moses:['Moses','pgp'],abr:['Abraham','pgp'],'js-m':['Joseph Smith—Matthew','pgp'],'js-h':['Joseph Smith—History','pgp'],'a-of-f':['Articles of Faith','pgp'],
@@ -19,12 +20,30 @@ function applyTabVisibility(ref){
  sync();
  if(typeof MutationObserver!=='undefined')new MutationObserver(sync).observe(document.documentElement,{childList:true,subtree:true});
 }
+function scholarCard(r){
+ const s=r.lds_scholar_sources||{}, title=s.work_title||'LDS Scholarship', author=s.author||'', loc=[r.chapter_title,r.page_location].filter(Boolean).join(' · '), url=r.source_url||s.source_url||'';
+ return `<div class="helpentry"><div class="langlabel">LDS SCHOLAR</div><h3>${html(author)}</h3><p><strong>${html(title)}</strong></p>${loc?`<div class="meta">${html(loc)}</div>`:''}${r.exact_quote?`<div class="sourcebox"><div class="label">Quoted text</div><p>${html(r.exact_quote)}</p></div>`:''}${r.summary?`<div class="sourcebox"><div class="label">Connection</div><p>${html(r.summary)}</p></div>`:''}${r.citation_text?`<div class="meta">${html(r.citation_text)}</div>`:''}${url?`<div class="help-source"><a href="${html(url)}" target="_blank">Open source →</a></div>`:''}</div>`;
+}
+function installScholars(ref,phrase){
+ if(typeof document==='undefined'||!ref||!phrase)return;
+ const endpoint='https://qgkexntrqccusjzxlmyg.supabase.co/functions/v1/lds-scholar-lookup?ref='+encodeURIComponent(ref)+'&phrase='+encodeURIComponent(phrase);
+ let results=[];
+ fetch(endpoint).then(r=>r.json()).then(j=>{results=j.results||[];sync()}).catch(()=>{});
+ function sync(){
+  const tabs=document.getElementById('tabs'); if(!tabs||!results.length)return;
+  let b=tabs.querySelector('.tab[data-id="scholars"]');
+  if(!b){b=document.createElement('button');b.className='tab';b.dataset.id='scholars';b.textContent='Scholars';tabs.appendChild(b)}
+  b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));const panel=document.getElementById('panel');if(panel)panel.innerHTML='<h2>Scholars</h2>'+results.map(scholarCard).join('')};
+ }
+ if(typeof MutationObserver!=='undefined')new MutationObserver(sync).observe(document.documentElement,{childList:true,subtree:true});
+}
 export function parseLDSShare(input,explicitRef=''){
  let s=(input||'').replace(/\u00a0/g,' ').trim(),url='';const ui=s.search(/https?:\/\//i);if(ui>=0){url=s.slice(ui).trim();s=s.slice(0,ui).trim()}
  let book='',chapter='',verse='',ref=explicitRef;
  const m=(ref||s).match(LDS_REF_RE);if(m){book=canonicalBook(m[1]);chapter=m[2];verse=m[3];ref=`${book} ${chapter}:${verse}`;s=s.replace(m[0],' ').trim()}
  if(!ref&&url){const u=url.match(/\/scriptures\/(ot|nt|bofm|dc-testament|pgp)\/([^/]+)\/(\d+).*?(?:id=p(\d+)|#p(\d+))/i);if(u){const x=SLUGS[u[2].toLowerCase()];book=x?.[0]||u[2];chapter=u[3];verse=u[4]||u[5]||'';ref=`${book} ${chapter}${verse?':'+verse:''}`}}
  if(ref&&s&&book)s=s.replace(new RegExp('^'+escRe(book).replace(/\\ /g,'\\s+')+'\\s+'+chapter+'\\s*[:.]?\\s*'+verse+'\\s*','i'),'').trim();
- if(typeof document!=='undefined')applyTabVisibility(ref);
- return{text:s.replace(/^[-–—:;,.\s]+|[-–—:;,.\s]+$/g,'').replace(/\s+/g,' '),url,ref};
+ const text=s.replace(/^[-–—:;,.\s]+|[-–—:;,.\s]+$/g,'').replace(/\s+/g,' ');
+ if(typeof document!=='undefined'){applyTabVisibility(ref);installScholars(ref,text.replace(/[“”"']/g,'').trim())}
+ return{text,url,ref};
 }
