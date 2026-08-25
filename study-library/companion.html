@@ -56,19 +56,15 @@
       </div>
     </div>
   </aside>
-
   <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+import {parseLDSShare} from './lds-reference-parser.js';
 
 const SBURL='https://qgkexntrqccusjzxlmyg.supabase.co',SBKEY='sb_publishable_fxGyeKwo2QfovWpKSfMiQw_w5N2yeYF',sb=createClient(SBURL,SBKEY);
 const BASE=SBURL+'/functions/v1/';
 const EP={study:BASE+'study-lookup',lang:BASE+'original-language-lookup',foot:BASE+'lds-footnote-lookup',help:BASE+'lds-study-help-lookup',defs:BASE+'definition-lookup',trans:BASE+'translation-lookup'};
 const params=new URLSearchParams(location.search),raw=(params.get('text')||params.get('input')||'').trim(),explicitRef=(params.get('ref')||'').trim();
-const BOOKS='Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|1 Samuel|2 Samuel|1 Kings|2 Kings|1 Chronicles|2 Chronicles|Ezra|Nehemiah|Esther|Job|Psalms?|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|1 Corinthians|2 Corinthians|Galatians|Ephesians|Philippians|Colossians|1 Thessalonians|2 Thessalonians|1 Timothy|2 Timothy|Titus|Philemon|Hebrews|James|1 Peter|2 Peter|1 John|2 John|3 John|Jude|Revelation',REF_RE=new RegExp('\\b('+BOOKS+')\\s+(\\d+):(\\d+)','i');
-
-function parseShare(input){let s=input.replace(/\u00a0/g,' ').trim(),url='';const ui=s.search(/https?:\/\//i);if(ui>=0){url=s.slice(ui).trim();s=s.slice(0,ui).trim()}let book='',chapter='',verse='',ref=explicitRef;const m=(ref||s).match(REF_RE);if(m){book=m[1];chapter=m[2];verse=m[3];ref=`${book} ${chapter}:${verse}`;s=s.replace(m[0],' ').trim()}if(!ref&&url){const u=url.match(/\/scriptures\/(?:ot|nt)\/([^/]+)\/(\d+).*?(?:id=p(\d+)|#p(\d+))/i);if(u){const map={gen:'Genesis',ex:'Exodus',lev:'Leviticus',num:'Numbers',deut:'Deuteronomy',josh:'Joshua',judg:'Judges',ps:'Psalms',prov:'Proverbs',isa:'Isaiah',jer:'Jeremiah',matt:'Matthew',mark:'Mark',luke:'Luke',john:'John',acts:'Acts',rom:'Romans'};book=map[u[1].toLowerCase()]||u[1];chapter=u[2];verse=u[3]||u[4]||'';ref=`${book} ${chapter}${verse?':'+verse:''}`}}if(ref&&s&&book)s=s.replace(new RegExp('^'+book.replace(/ /g,'\\s+')+'\\s+'+chapter+'\\s*[:.]?\\s*'+verse+'\\s*','i'),'').trim();return{text:s.replace(/^[-–—:;,.\s]+|[-–—:;,.\s]+$/g,'').replace(/\s+/g,' '),url,ref}}
-
-const st=parseShare(raw),phrase=st.text.replace(/[“”"']/g,'').trim();
+const st=parseLDSShare(raw,explicitRef),phrase=st.text.replace(/[“”"']/g,'').trim();
 referenceText.textContent=st.ref||'Reference not detected';
 selectedText.textContent=phrase||'No selection';
 const labels={footnotes:'Footnotes',language:'Hebrew/Greek',definitions:'Definitions',gtts:'GTTS',bible_dictionary:'Bible Dictionary',topical_guide:'Topical Guide',translations:'Translations',research:'Research'};
